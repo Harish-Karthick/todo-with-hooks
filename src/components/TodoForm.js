@@ -9,12 +9,6 @@ import useInputState from "../hooks/useInputState";
 
 function TodoForm({ handleFormSubmit, open, closeModal, newTodoForm, todo }) {
   const [inputValue, handleInputChange, reset] = useInputState("");
-  function handleSubmit(event) {
-    event.preventDefault();
-    handleFormSubmit(inputValue);
-    reset();
-    closeModal();
-  }
   return (
     <Dialog
       open={open}
@@ -23,7 +17,14 @@ function TodoForm({ handleFormSubmit, open, closeModal, newTodoForm, todo }) {
       onClose={closeModal}
     >
       <DialogTitle>{newTodoForm ? "New Task" : "Edit Task"}</DialogTitle>
-      <form onSubmit={handleSubmit}>
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          handleFormSubmit(inputValue);
+          reset();
+          closeModal();
+        }}
+      >
         <DialogContent>
           <TextField
             autoFocus

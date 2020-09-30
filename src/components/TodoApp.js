@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Paper from "@material-ui/core/Paper";
@@ -7,10 +7,9 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import { AddBox } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
-import { v4 as uuidv4 } from "uuid";
 import TodoList from "./TodoList";
+import useTodoState from "../hooks/useTodoState";
 import TodoForm from "./TodoForm";
-import useToggleState from "../hooks/useToggleState";
 
 const useStyles = makeStyles({
   buttonContainer: {
@@ -25,51 +24,20 @@ const useStyles = makeStyles({
 });
 
 function TodoApp() {
-  const initialTodos = [
-    { id: uuidv4(), task: "Walk the dog", completed: false },
-    { id: uuidv4(), task: "Pet the dog", completed: false },
-    { id: uuidv4(), task: "Buy groceries", completed: false },
-  ];
-  const [allTodos, setTodos] = useState(initialTodos);
-  const [showModal, toggleModalTrue, toggleModalFalse] = useToggleState(false);
-  const [
+  const {
+    allTodos,
+    taskToEdit,
+    addTaskToList,
+    checkTask,
+    deleteTask,
+    editTask,
     newTodoForm,
-    toggleNewTodoFormlTrue,
-    toggleNewTodoFormFalse,
-  ] = useToggleState(true);
-  const [taskToEdit, setTaskToEdit] = useState("");
-  function addTaskToList(taskInput) {
-    setTodos([
-      ...allTodos,
-      { id: uuidv4(), task: taskInput, completed: false },
-    ]);
-  }
-  function deleteTask(taskId) {
-    const updatedTodo = allTodos.filter((task) => task.id !== taskId);
-    setTodos(updatedTodo);
-  }
-  function checkTask(taskId) {
-    let updatedTodo = allTodos.map((todo) =>
-      todo.id === taskId ? { ...todo, completed: !todo.completed } : { ...todo }
-    );
-    setTodos(updatedTodo);
-  }
-  function showNewFTaskForm() {
-    toggleNewTodoFormlTrue();
-    toggleModalTrue();
-  }
-  function showEditTaskForm(id) {
-    toggleNewTodoFormFalse();
-    toggleModalTrue();
-    setTaskToEdit(id);
-  }
-  function editTask(taskInput) {
-    let updatedTodo = allTodos.map((todo) =>
-      todo.id === taskToEdit ? { ...todo, task: taskInput } : { ...todo }
-    );
-    setTodos(updatedTodo);
-  }
-  function renderForm() {
+    showNewTaskForm,
+    showEditTaskForm,
+    showModal,
+    toggleModalFalse,
+  } = useTodoState("todos", []);
+  const renderForm = () => {
     if (newTodoForm)
       return (
         <TodoForm
@@ -89,7 +57,7 @@ function TodoApp() {
           todo={allTodos.find((todo) => todo.id === taskToEdit)}
         />
       );
-  }
+  };
   const classes = useStyles();
   return (
     <Grid container spacing={3} justify={"center"}>
@@ -108,7 +76,7 @@ function TodoApp() {
             <Button
               color='secondary'
               variant='outlined'
-              onClick={showNewFTaskForm}
+              onClick={showNewTaskForm}
               className={classes.addTaskButton}
             >
               <AddBox color='secondary' />
