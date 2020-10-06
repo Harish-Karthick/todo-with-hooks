@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, memo } from "react";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
@@ -7,6 +7,8 @@ import Checkbox from "@material-ui/core/Checkbox";
 import IconButton from "@material-ui/core/IconButton";
 import { Delete, Edit } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
+import { TodoDispatchContext } from "../context/Todos.context";
+import { UtilitiesDispatchContext } from "../context/Utilities.context";
 
 const useStyles = makeStyles({
   deleteButton: {
@@ -17,14 +19,9 @@ const useStyles = makeStyles({
   },
 });
 
-function TodoItem({
-  task,
-  id,
-  deleteTask,
-  checkTask,
-  completed,
-  showEditTaskForm,
-}) {
+function TodoItem({ task, id, completed }) {
+  const todosDispatch = useContext(TodoDispatchContext);
+  const utilityDispatch = useContext(UtilitiesDispatchContext);
   const classes = useStyles();
   return (
     <ListItem divider>
@@ -38,7 +35,7 @@ function TodoItem({
               ? `mark ${task} has not been completed`
               : `mark ${task} has been completed`,
           }}
-          onChange={() => checkTask(id)}
+          onChange={() => todosDispatch({ type: "CHECK-TASK", id: id })}
         />
       </ListItemIcon>
       <ListItemText
@@ -49,14 +46,16 @@ function TodoItem({
       <ListItemSecondaryAction>
         <IconButton
           className={classes.deleteButton}
-          onClick={() => deleteTask(id)}
+          onClick={() => todosDispatch({ type: "DELETE-TASK", id: id })}
           disableFocusRipple
         >
           <Delete />
         </IconButton>
         <IconButton
           className={classes.editButton}
-          onClick={() => showEditTaskForm(id)}
+          onClick={() =>
+            utilityDispatch({ type: "SHOW-EDIT-TASK-FORM", id: id })
+          }
           disableFocusRipple
         >
           <Edit />
@@ -66,4 +65,4 @@ function TodoItem({
   );
 }
 
-export default TodoItem;
+export default memo(TodoItem);

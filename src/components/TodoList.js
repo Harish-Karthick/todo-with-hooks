@@ -1,19 +1,18 @@
-import React from "react";
+import React, { useContext } from "react";
 import List from "@material-ui/core/List";
+import { TodoContext } from "../context/Todos.context";
 import TodoItem from "./TodoItem";
 
-function TodoList({ allTodos, deleteTask, checkTask, showEditTaskForm }) {
+function TodoList() {
+  const todosState = useContext(TodoContext);
   return (
     <List>
-      {allTodos.map((todo) => (
+      {todosState.map((todo) => (
         <TodoItem
           key={todo.id}
           task={todo.task}
           id={todo.id}
-          deleteTask={deleteTask}
-          checkTask={checkTask}
           completed={todo.completed}
-          showEditTaskForm={showEditTaskForm}
         />
       ))}
     </List>

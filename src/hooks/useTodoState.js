@@ -28,7 +28,6 @@ export default (key, initialTodos) => {
     deleteTask: (taskId) => {
       const updatedTodo = allTodos.filter((task) => task.id !== taskId);
       setTodos(updatedTodo);
-      console.log(newTodoForm);
     },
     checkTask: (taskId) => {
       let updatedTodo = allTodos.map((todo) =>
